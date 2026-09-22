@@ -319,18 +319,54 @@ const WebCraftStorage = (function () {
       window.location.reload();
     },
 
-    changePassword: function (oldPassword, newPassword) {
+    changePassword: function (newPassword, oldPassword = null) {
       const active = getActiveAccount();
       if (!active) return { success: false, error: 'Not logged in.' };
-      if (active.password !== oldPassword.trim()) {
-        return { success: false, error: 'Current password is incorrect.' };
+      
+      if (oldPassword !== null && oldPassword !== '') {
+        if (active.password !== oldPassword.trim()) {
+          return { success: false, error: 'Current password is incorrect.' };
+        }
       }
+      
       if (!newPassword || newPassword.trim().length < 3) {
         return { success: false, error: 'New password must be at least 3 characters.' };
       }
 
       updateActiveAccount({ password: newPassword.trim() });
       return { success: true };
+    },
+
+    resetForgottenPassword: function (username, fullName, newPassword) {
+      const accounts = getAccounts();
+      const cleanUsername = username.trim().toLowerCase();
+      const cleanFullName = fullName.trim().toLowerCase();
+
+      const account = accounts.find(a => 
+        a.username.toLowerCase() === cleanUsername || 
+        a.name.toLowerCase() === cleanUsername
+      );
+
+      if (!account) {
+        return { success: false, error: `No account found with username "${username}".` };
+      }
+
+      if (account.name.toLowerCase() !== cleanFullName && account.username.toLowerCase() !== cleanFullName) {
+        return { success: false, error: 'Full name does not match the registered account name.' };
+      }
+
+      if (!newPassword || newPassword.trim().length < 3) {
+        return { success: false, error: 'New password must be at least 3 characters.' };
+      }
+
+      let index = accounts.findIndex(a => a.id === account.id);
+      accounts[index].password = newPassword.trim();
+      saveAccounts(accounts);
+      localStorage.setItem(KEYS.ACTIVE_SESSION, account.id);
+      syncActiveToLegacy(accounts[index]);
+
+      window.dispatchEvent(new CustomEvent('webcraft:auth_changed', { detail: { account: accounts[index], action: 'reset_password' } }));
+      return { success: true, account: accounts[index] };
     },
 
     // ==========================================

@@ -278,10 +278,31 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   // Change Password Modal
+  const confirmPassInput = document.getElementById('confirmPassInput');
+
+  // Show/Hide buttons inside profile modals
+  document.querySelectorAll('.pwd-toggle-profile-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const targetId = btn.getAttribute('data-target');
+      const input = document.getElementById(targetId);
+      if (input) {
+        if (input.type === 'password') {
+          input.type = 'text';
+          btn.innerText = 'HIDE';
+          btn.style.color = 'var(--primary-blue)';
+        } else {
+          input.type = 'password';
+          btn.innerText = 'SHOW';
+          btn.style.color = 'var(--text-muted)';
+        }
+      }
+    });
+  });
+
   changePasswordBtn?.addEventListener('click', () => {
-    currentPassInput.value = '';
-    newPassInput.value = '';
-    passChangeError.style.display = 'none';
+    if (newPassInput) newPassInput.value = '';
+    if (confirmPassInput) confirmPassInput.value = '';
+    if (passChangeError) passChangeError.style.display = 'none';
     changePassModal.classList.add('active');
     WebCraftAudio.click();
   });
@@ -291,10 +312,24 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   savePassBtn?.addEventListener('click', () => {
-    const curr = currentPassInput.value;
-    const nw = newPassInput.value;
+    const nw = newPassInput?.value.trim() || '';
+    const conf = confirmPassInput?.value.trim() || '';
 
-    const res = WebCraftStorage.changePassword(curr, nw);
+    if (!nw || nw.length < 3) {
+      passChangeError.innerText = 'New password must be at least 3 characters.';
+      passChangeError.style.display = 'block';
+      WebCraftAudio.error();
+      return;
+    }
+
+    if (conf && nw !== conf) {
+      passChangeError.innerText = 'Passwords do not match. Please re-enter.';
+      passChangeError.style.display = 'block';
+      WebCraftAudio.error();
+      return;
+    }
+
+    const res = WebCraftStorage.changePassword(nw);
     if (!res.success) {
       passChangeError.innerText = res.error;
       passChangeError.style.display = 'block';

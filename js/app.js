@@ -453,18 +453,69 @@ const WebCraftApp = (function () {
             <input type="text" id="loginUsernameInput" placeholder="e.g. rahul1 or Rahul Sharma" style="width: 100%; padding: 11px 14px; border: 1.5px solid var(--border-light); border-radius: var(--radius-md); font-size: 14px; font-weight: 600; outline: none;" />
           </div>
 
-          <div style="margin-bottom: 18px;">
-            <label for="loginPasswordInput" style="display: block; font-size: 12.5px; font-weight: 700; color: var(--text-muted); margin-bottom: 6px;">
-              Password / PIN:
-            </label>
-            <input type="password" id="loginPasswordInput" placeholder="Enter your password..." style="width: 100%; padding: 11px 14px; border: 1.5px solid var(--border-light); border-radius: var(--radius-md); font-size: 14px; font-weight: 600; outline: none;" />
+          <div style="margin-bottom: 8px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+              <label for="loginPasswordInput" style="font-size: 12.5px; font-weight: 700; color: var(--text-muted);">
+                Password / PIN:
+              </label>
+              <button type="button" id="forgotPassTriggerBtn" style="background: none; border: none; font-size: 12px; color: var(--primary-blue); font-weight: 700; cursor: pointer; padding: 0;">
+                Forgot Password?
+              </button>
+            </div>
+            <div style="position: relative;">
+              <input type="password" id="loginPasswordInput" placeholder="Enter your password..." style="width: 100%; padding: 11px 40px 11px 14px; border: 1.5px solid var(--border-light); border-radius: var(--radius-md); font-size: 14px; font-weight: 600; outline: none;" />
+              <button type="button" class="pwd-toggle-btn" data-target="loginPasswordInput" style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); background: none; border: none; font-size: 11px; font-weight: 800; color: var(--text-muted); cursor: pointer;">SHOW</button>
+            </div>
           </div>
 
-          <div id="loginErrorMsg" style="display: none; color: #EF4444; font-size: 12.5px; font-weight: 700; margin-bottom: 14px; background: #FEF2F2; padding: 8px 12px; border-radius: 6px;"></div>
+          <div id="loginErrorMsg" style="display: none; color: #EF4444; font-size: 12.5px; font-weight: 700; margin: 10px 0; background: #FEF2F2; padding: 8px 12px; border-radius: 6px;"></div>
 
-          <button class="btn btn-primary btn-lg" id="submitLoginBtn" style="width: 100%;">
+          <button class="btn btn-primary btn-lg" id="submitLoginBtn" style="width: 100%; margin-top: 10px;">
             LOG IN TO WEBCRAFT
           </button>
+        </div>
+
+        <!-- TAB 1.5: FORGOT PASSWORD RECOVERY VIEW -->
+        <div id="authForgotTabContent" style="display: none;">
+          <div style="background: #EFF6FF; border: 1.5px solid #BFDBFE; border-radius: var(--radius-md); padding: 12px 14px; margin-bottom: 16px;">
+            <div style="font-size: 13px; font-weight: 800; color: #1E3A8A; margin-bottom: 2px;">Account Recovery & Password Reset</div>
+            <div style="font-size: 12px; color: #3B82F6;">Enter your registered Username and Full Name to reset your password instantly.</div>
+          </div>
+
+          <div style="margin-bottom: 12px;">
+            <label for="forgotUsernameInput" style="display: block; font-size: 12px; font-weight: 700; color: var(--text-muted); margin-bottom: 5px;">
+              Your Username <span style="color:#EF4444;">*</span>:
+            </label>
+            <input type="text" id="forgotUsernameInput" placeholder="e.g. rahul123" style="width: 100%; padding: 10px 12px; border: 1.5px solid var(--border-light); border-radius: var(--radius-md); font-size: 13.5px; font-weight: 600; outline: none;" required />
+          </div>
+
+          <div style="margin-bottom: 12px;">
+            <label for="forgotFullNameInput" style="display: block; font-size: 12px; font-weight: 700; color: var(--text-muted); margin-bottom: 5px;">
+              Registered Full Name <span style="color:#EF4444;">*</span>:
+            </label>
+            <input type="text" id="forgotFullNameInput" placeholder="e.g. Rahul Sharma (as on certificate)" style="width: 100%; padding: 10px 12px; border: 1.5px solid var(--border-light); border-radius: var(--radius-md); font-size: 13.5px; font-weight: 600; outline: none;" required />
+          </div>
+
+          <div style="margin-bottom: 16px;">
+            <label for="forgotNewPassInput" style="display: block; font-size: 12px; font-weight: 700; color: var(--text-muted); margin-bottom: 5px;">
+              Set New Password / PIN <span style="color:#EF4444;">*</span>:
+            </label>
+            <div style="position: relative;">
+              <input type="password" id="forgotNewPassInput" placeholder="At least 3 characters" style="width: 100%; padding: 10px 40px 10px 12px; border: 1.5px solid var(--border-light); border-radius: var(--radius-md); font-size: 13.5px; font-weight: 600; outline: none;" required />
+              <button type="button" class="pwd-toggle-btn" data-target="forgotNewPassInput" style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); background: none; border: none; font-size: 11px; font-weight: 800; color: var(--text-muted); cursor: pointer;">SHOW</button>
+            </div>
+          </div>
+
+          <div id="forgotErrorMsg" style="display: none; color: #EF4444; font-size: 12px; font-weight: 700; margin-bottom: 12px; background: #FEF2F2; padding: 8px 12px; border-radius: 6px;"></div>
+
+          <div style="display: flex; gap: 8px;">
+            <button type="button" class="btn btn-secondary btn-lg" id="backToLoginFromForgotBtn" style="flex: 1;">
+              Back to Login
+            </button>
+            <button type="button" class="btn btn-primary btn-lg" id="submitForgotBtn" style="flex: 1.5;">
+              Reset & Log In
+            </button>
+          </div>
         </div>
 
         <!-- TAB 2: CREATE ACCOUNT -->
@@ -488,7 +539,10 @@ const WebCraftApp = (function () {
               <label for="regPasswordInput" style="display: block; font-size: 12px; font-weight: 700; color: var(--text-muted); margin-bottom: 5px;">
                 Password / PIN <span style="color:#EF4444;">*</span>:
               </label>
-              <input type="password" id="regPasswordInput" placeholder="At least 3 characters" style="width: 100%; padding: 11px 12px; border: 1.5px solid var(--border-light); border-radius: var(--radius-md); font-size: 13.5px; font-weight: 600; outline: none;" required />
+              <div style="position: relative;">
+                <input type="password" id="regPasswordInput" placeholder="At least 3 characters" style="width: 100%; padding: 11px 40px 11px 12px; border: 1.5px solid var(--border-light); border-radius: var(--radius-md); font-size: 13.5px; font-weight: 600; outline: none;" required />
+                <button type="button" class="pwd-toggle-btn" data-target="regPasswordInput" style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); background: none; border: none; font-size: 11px; font-weight: 800; color: var(--text-muted); cursor: pointer;">SHOW</button>
+              </div>
             </div>
           </div>
 
@@ -665,6 +719,92 @@ const WebCraftApp = (function () {
 
     submitLoginBtn?.addEventListener('click', performLogin);
     loginPassInput?.addEventListener('keydown', (e) => { if (e.key === 'Enter') performLogin(); });
+
+    // Password Show/Hide Toggle Buttons
+    modal.querySelectorAll('.pwd-toggle-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const targetId = btn.getAttribute('data-target');
+        const input = document.getElementById(targetId);
+        if (input) {
+          if (input.type === 'password') {
+            input.type = 'text';
+            btn.innerText = 'HIDE';
+            btn.style.color = 'var(--primary-blue)';
+          } else {
+            input.type = 'password';
+            btn.innerText = 'SHOW';
+            btn.style.color = 'var(--text-muted)';
+          }
+        }
+      });
+    });
+
+    // Forgot Password Triggers
+    const forgotTriggerBtn = document.getElementById('forgotPassTriggerBtn');
+    const forgotContent = document.getElementById('authForgotTabContent');
+    const backToLoginBtn = document.getElementById('backToLoginFromForgotBtn');
+    const submitForgotBtn = document.getElementById('submitForgotBtn');
+    const forgotUserInput = document.getElementById('forgotUsernameInput');
+    const forgotFullNameInput = document.getElementById('forgotFullNameInput');
+    const forgotNewPassInput = document.getElementById('forgotNewPassInput');
+    const forgotError = document.getElementById('forgotErrorMsg');
+
+    forgotTriggerBtn?.addEventListener('click', () => {
+      loginContent.style.display = 'none';
+      regContent.style.display = 'none';
+      forgotContent.style.display = 'block';
+      tabLoginBtn.style.borderBottom = '3px solid transparent';
+      tabLoginBtn.style.color = 'var(--text-muted)';
+      tabRegBtn.style.borderBottom = '3px solid transparent';
+      tabRegBtn.style.color = 'var(--text-muted)';
+      
+      // Auto-fill username if entered in login
+      if (loginUserInput.value.trim()) {
+        forgotUserInput.value = loginUserInput.value.trim();
+        forgotFullNameInput.focus();
+      } else {
+        forgotUserInput.focus();
+      }
+      WebCraftAudio.click();
+    });
+
+    backToLoginBtn?.addEventListener('click', () => {
+      forgotContent.style.display = 'none';
+      switchTab('login');
+      WebCraftAudio.click();
+    });
+
+    function performForgotReset() {
+      const uVal = forgotUserInput.value.trim();
+      const nVal = forgotFullNameInput.value.trim();
+      const pVal = forgotNewPassInput.value.trim();
+
+      if (!uVal || !nVal || !pVal) {
+        forgotError.innerText = 'Please fill in all fields.';
+        forgotError.style.display = 'block';
+        WebCraftAudio.error();
+        return;
+      }
+
+      const res = WebCraftStorage.resetForgottenPassword(uVal, nVal, pVal);
+      if (!res.success) {
+        forgotError.innerText = res.error;
+        forgotError.style.display = 'block';
+        WebCraftAudio.error();
+        return;
+      }
+
+      forgotError.style.display = 'none';
+      modal.classList.remove('active');
+      setTimeout(() => modal.remove(), 300);
+      WebCraftAudio.success();
+      showToast(`Password reset successfully! Welcome back, ${res.account.name}!`, 'success', 'sparkle');
+      updateHeaderStats();
+      setTimeout(() => window.location.reload(), 500);
+    }
+
+    submitForgotBtn?.addEventListener('click', performForgotReset);
+    forgotNewPassInput?.addEventListener('keydown', (e) => { if (e.key === 'Enter') performForgotReset(); });
 
     // Handle Register Submit
     const submitRegBtn = document.getElementById('submitRegisterBtn');
