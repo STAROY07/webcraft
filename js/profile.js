@@ -1,9 +1,11 @@
-// WebCraft Learner Profile & Graduation Certificate Controller (with Local Photo Upload & Official Seal)
+// WebCraft Learner Profile & Graduation Certificate Controller
+// (Multi-Account Manager, Password Management, Photo Upload & Verified Certificate)
 document.addEventListener('DOMContentLoaded', () => {
   WebCraftApp.init('profile');
 
   const profileAvatarEl = document.getElementById('profileAvatarDisplay');
   const profileNameEl = document.getElementById('profileNameDisplay');
+  const profileUsernameEl = document.getElementById('profileUsernameDisplay');
   const profileLevelTitleEl = document.getElementById('profileLevelTitle');
   const profileJoinedDateEl = document.getElementById('profileJoinedDate');
   const overallProgressPercentEl = document.getElementById('overallProgressPercent');
@@ -25,12 +27,26 @@ document.addEventListener('DOMContentLoaded', () => {
   const cancelProfileBtn = document.getElementById('cancelProfileBtn');
   const avatarButtons = document.querySelectorAll('.avatar-select-btn');
   
-  // File Upload Elements (Laptop Files / Mobile Gallery)
+  // File Upload Elements
   const avatarFileInput = document.getElementById('avatarFileInput');
   const uploadPhotoBtn = document.getElementById('uploadPhotoBtn');
   const removePhotoBtn = document.getElementById('removePhotoBtn');
   const photoPreviewWrap = document.getElementById('photoPreviewWrap');
   const photoPreviewImg = document.getElementById('photoPreviewImg');
+
+  // Password Change Elements
+  const changePasswordBtn = document.getElementById('changePasswordBtn');
+  const changePassModal = document.getElementById('changePasswordModal');
+  const currentPassInput = document.getElementById('currentPassInput');
+  const newPassInput = document.getElementById('newPassInput');
+  const passChangeError = document.getElementById('passChangeError');
+  const savePassBtn = document.getElementById('savePassBtn');
+  const cancelPassBtn = document.getElementById('cancelPassBtn');
+
+  // Account Switch & Logout
+  const profileSwitchAccBtn = document.getElementById('profileSwitchAccBtn');
+  const profileLogoutBtn = document.getElementById('profileLogoutBtn');
+  const deviceAccountsList = document.getElementById('deviceAccountsList');
 
   // Certificate Elements
   const printCertBtn = document.getElementById('printCertBtn');
@@ -54,6 +70,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     profileNameEl.innerText = user.name || 'Web Explorer';
+    if (profileUsernameEl) profileUsernameEl.innerText = user.username || 'learner';
     profileLevelTitleEl.innerText = `Level ${stats.level.currentLevel}: ${stats.level.title}`;
     profileJoinedDateEl.innerText = `Member since ${user.joinedDate || '2026'}`;
 
@@ -86,6 +103,56 @@ document.addEventListener('DOMContentLoaded', () => {
         certAvatarEl.innerHTML = `<span style="font-weight:800; color:#2563EB; font-size:16px;">${user.avatar || 'WC'}</span>`;
       }
     }
+
+    renderDeviceAccountsList();
+  }
+
+  function renderDeviceAccountsList() {
+    if (!deviceAccountsList) return;
+    const accounts = WebCraftStorage.getAllAccounts();
+    const activeUser = WebCraftStorage.getUser();
+
+    if (accounts.length <= 1) {
+      deviceAccountsList.innerHTML = `
+        <div style="grid-column: 1 / -1; padding: 14px; background: #F8FAFC; border-radius: 8px; font-size: 13px; color: var(--text-muted);">
+          Only 1 profile registered on this device. Click <strong>"Switch Account"</strong> above to register another student account!
+        </div>
+      `;
+      return;
+    }
+
+    deviceAccountsList.innerHTML = accounts.map(acc => {
+      const isActive = acc.id === activeUser.id;
+      return `
+        <div style="padding: 14px; background: ${isActive ? '#EFF6FF' : '#FFFFFF'}; border: 1.5px solid ${isActive ? 'var(--primary-blue)' : 'var(--border-light)'}; border-radius: var(--radius-md); display: flex; align-items: center; justify-content: space-between;">
+          <div style="display: flex; align-items: center; gap: 10px;">
+            <div style="width: 36px; height: 36px; border-radius: 50%; background: #DBEAFE; color: #2563EB; font-weight: 800; display: flex; align-items: center; justify-content: center; overflow: hidden; font-size: 12px;">
+              ${acc.photo ? `<img src="${acc.photo}" style="width:100%;height:100%;object-fit:cover;" />` : acc.avatar}
+            </div>
+            <div>
+              <div style="font-size: 13.5px; font-weight: 700; color: #0F172A;">${escapeHtml(acc.name)}</div>
+              <div style="font-size: 11px; color: var(--text-muted);">@${escapeHtml(acc.username)} • Lv ${acc.level}</div>
+            </div>
+          </div>
+          ${isActive ? `
+            <span style="font-size: 11px; font-weight: 800; color: var(--primary-blue); background: white; padding: 4px 8px; border-radius: 10px; border: 1px solid var(--primary-blue);">Active</span>
+          ` : `
+            <button type="button" class="btn btn-sm switch-to-acc-btn" data-id="${acc.id}" style="padding: 4px 10px; font-size: 11.5px;">Switch</button>
+          `}
+        </div>
+      `;
+    }).join('');
+
+    deviceAccountsList.querySelectorAll('.switch-to-acc-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const id = btn.getAttribute('data-id');
+        WebCraftStorage.switchAccount(id);
+        WebCraftAudio.success();
+        WebCraftApp.toast('Switched profile successfully!', 'success', 'check');
+        renderProfile();
+        WebCraftApp.updateStats();
+      });
+    });
   }
 
   function escapeHtml(str) {
@@ -151,7 +218,7 @@ document.addEventListener('DOMContentLoaded', () => {
     WebCraftAudio.click();
   });
 
-  // Photo Upload Trigger (Works on both Laptop File System & Mobile Gallery/Camera)
+  // Photo Upload Trigger (Works on Laptop File Explorer & Mobile Gallery/Camera)
   uploadPhotoBtn?.addEventListener('click', () => {
     avatarFileInput.click();
   });
@@ -208,6 +275,47 @@ document.addEventListener('DOMContentLoaded', () => {
 
   cancelProfileBtn?.addEventListener('click', () => {
     editModal.classList.remove('active');
+  });
+
+  // Change Password Modal
+  changePasswordBtn?.addEventListener('click', () => {
+    currentPassInput.value = '';
+    newPassInput.value = '';
+    passChangeError.style.display = 'none';
+    changePassModal.classList.add('active');
+    WebCraftAudio.click();
+  });
+
+  cancelPassBtn?.addEventListener('click', () => {
+    changePassModal.classList.remove('active');
+  });
+
+  savePassBtn?.addEventListener('click', () => {
+    const curr = currentPassInput.value;
+    const nw = newPassInput.value;
+
+    const res = WebCraftStorage.changePassword(curr, nw);
+    if (!res.success) {
+      passChangeError.innerText = res.error;
+      passChangeError.style.display = 'block';
+      WebCraftAudio.error();
+      return;
+    }
+
+    changePassModal.classList.remove('active');
+    WebCraftAudio.success();
+    WebCraftApp.toast('Password updated successfully!', 'success', 'check');
+  });
+
+  // Switch Account & Logout
+  profileSwitchAccBtn?.addEventListener('click', () => {
+    WebCraftApp.showAuthModal('login');
+  });
+
+  profileLogoutBtn?.addEventListener('click', () => {
+    if (confirm("Log out of your account on this device? Your progress is saved.")) {
+      WebCraftStorage.logout();
+    }
   });
 
   // Print Certificate as PDF

@@ -1,19 +1,55 @@
-// WebCraft Global Application Controller (Clean, Professional, Photo & Seal Support)
+// WebCraft Global Application Controller
+// (Multi-Account Authentication Modal, Header Dropdown, Persistent Session & Audio Feedback)
 const WebCraftApp = (function () {
   function getRootPath() {
     return window.location.pathname.includes('/pages/') ? '../' : './';
   }
 
   function getAvatarHtml(user, sizeClass = '') {
-    if (user.photo) {
-      return `<img src="${user.photo}" alt="${escapeHtml(user.name)}" class="avatar-photo-img ${sizeClass}" />`;
+    if (user && user.photo) {
+      return `<img src="${user.photo}" alt="${escapeHtml(user.name || 'User')}" class="avatar-photo-img ${sizeClass}" />`;
     }
-    return `<span>${user.avatar || 'WC'}</span>`;
+    return `<span>${(user && user.avatar) ? user.avatar : 'WC'}</span>`;
   }
 
   function escapeHtml(str) {
     if (!str) return '';
     return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+  }
+
+  // Compress image before saving (<40KB base64)
+  function compressImage(file, callback) {
+    const reader = new FileReader();
+    reader.onload = function (e) {
+      const img = new Image();
+      img.onload = function () {
+        const canvas = document.createElement('canvas');
+        const maxSize = 180;
+        let width = img.width;
+        let height = img.height;
+
+        if (width > height) {
+          if (width > maxSize) {
+            height = Math.round((height * maxSize) / width);
+            width = maxSize;
+          }
+        } else {
+          if (height > maxSize) {
+            width = Math.round((width * maxSize) / height);
+            height = maxSize;
+          }
+        }
+
+        canvas.width = width;
+        canvas.height = height;
+        const ctx = canvas.getContext('2d');
+        ctx.drawImage(img, 0, 0, width, height);
+        const dataUrl = canvas.toDataURL('image/jpeg', 0.85);
+        callback(dataUrl);
+      };
+      img.src = e.target.result;
+    };
+    reader.readAsDataURL(file);
   }
 
   function renderHeader(activePage = 'home') {
@@ -22,7 +58,9 @@ const WebCraftApp = (function () {
 
     const root = getRootPath();
     const stats = WebCraftStorage.getStats();
-    const avatarContent = getAvatarHtml(stats.user);
+    const isLoggedIn = WebCraftStorage.isLoggedIn();
+    const user = stats.user;
+    const avatarContent = getAvatarHtml(user);
 
     headerContainer.innerHTML = `
       <header class="main-header">
@@ -79,9 +117,33 @@ const WebCraftApp = (function () {
               <span id="headerXP">${stats.xp} XP</span>
             </div>
 
-            <a href="${root}pages/profile.html" class="profile-avatar-btn" id="headerAvatar" title="My Profile">
-              ${avatarContent}
-            </a>
+            <!-- Profile / Account Trigger with Dropdown -->
+            <div class="user-menu-wrapper" style="position: relative;">
+              <button class="profile-avatar-btn" id="headerAvatarBtn" title="Account Menu" aria-label="Account Options">
+                ${avatarContent}
+              </button>
+
+              <div class="user-dropdown-menu" id="userDropdownMenu">
+                <div class="dropdown-header">
+                  <div style="font-weight:800; font-size:14px; color:#0F172A;" id="dropdownUserName">${escapeHtml(user.name || 'Web Explorer')}</div>
+                  <div style="font-size:11.5px; color:var(--text-muted);">@<span id="dropdownUserHandle">${escapeHtml(user.username || 'learner')}</span> • Lv ${stats.level.currentLevel}</div>
+                </div>
+                <div class="dropdown-divider"></div>
+                <a href="${root}pages/profile.html" class="dropdown-item">
+                  <span class="dropdown-icon">${WebCraftIcons.user}</span> My Profile & Certificate
+                </a>
+                <a href="${root}pages/achievements.html" class="dropdown-item">
+                  <span class="dropdown-icon">${WebCraftIcons.trophy}</span> My Badges & XP
+                </a>
+                <button type="button" class="dropdown-item" id="headerSwitchAccountBtn">
+                  <span class="dropdown-icon">${WebCraftIcons.refresh}</span> Switch Account / Log In
+                </button>
+                <div class="dropdown-divider"></div>
+                <button type="button" class="dropdown-item dropdown-logout" id="headerLogoutBtn">
+                  <span class="dropdown-icon" style="color:#EF4444;">${WebCraftIcons.lock}</span> Log Out
+                </button>
+              </div>
+            </div>
 
             <button class="hamburger-btn" id="hamburgerBtn" aria-label="Toggle Navigation Menu">
               <span></span>
@@ -116,6 +178,39 @@ const WebCraftApp = (function () {
         </a>
       </nav>
     `;
+
+    // Dropdown toggle
+    const avatarBtn = document.getElementById('headerAvatarBtn');
+    const dropdown = document.getElementById('userDropdownMenu');
+
+    if (avatarBtn && dropdown) {
+      avatarBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        dropdown.classList.toggle('open');
+        WebCraftAudio.click();
+      });
+
+      document.addEventListener('click', (e) => {
+        if (!dropdown.contains(e.target) && e.target !== avatarBtn) {
+          dropdown.classList.remove('open');
+        }
+      });
+    }
+
+    // Switch Account from header
+    document.getElementById('headerSwitchAccountBtn')?.addEventListener('click', () => {
+      dropdown?.classList.remove('open');
+      showAuthModal('login');
+      WebCraftAudio.click();
+    });
+
+    // Logout from header
+    document.getElementById('headerLogoutBtn')?.addEventListener('click', () => {
+      dropdown?.classList.remove('open');
+      if (confirm("Do you want to log out of your WebCraft account? Your progress is safely saved on this device.")) {
+        WebCraftStorage.logout();
+      }
+    });
 
     // Hamburger Menu Toggle
     const hamburger = document.getElementById('hamburgerBtn');
@@ -180,11 +275,12 @@ const WebCraftApp = (function () {
             </div>
 
             <div class="footer-col">
-              <h4>Progress & Profile</h4>
+              <h4>Account & Progress</h4>
               <ul>
                 <li><a href="${root}pages/achievements.html">Badge Showcase</a></li>
                 <li><a href="${root}pages/profile.html">Learner Profile</a></li>
-                <li><a href="#" id="footerResetBtn">Reset Progress</a></li>
+                <li><a href="#" id="footerSwitchAccountBtn">Switch Account</a></li>
+                <li><a href="#" id="footerResetBtn">Reset Active Progress</a></li>
               </ul>
             </div>
           </div>
@@ -196,9 +292,14 @@ const WebCraftApp = (function () {
       </footer>
     `;
 
+    document.getElementById('footerSwitchAccountBtn')?.addEventListener('click', (e) => {
+      e.preventDefault();
+      showAuthModal('login');
+    });
+
     document.getElementById('footerResetBtn')?.addEventListener('click', (e) => {
       e.preventDefault();
-      if (confirm("Are you sure you want to reset all your WebCraft XP and progress?")) {
+      if (confirm("Are you sure you want to reset XP and completed lessons for the currently logged in student?")) {
         WebCraftStorage.resetAllProgress();
       }
     });
@@ -285,96 +386,336 @@ const WebCraftApp = (function () {
     animate();
   }
 
-  function checkOnboarding() {
-    if (!WebCraftStorage.isOnboarded()) {
-      let modal = document.getElementById('onboardingModal');
-      if (!modal) {
-        modal = document.createElement('div');
-        modal.id = 'onboardingModal';
-        modal.className = 'modal-backdrop active';
-        modal.innerHTML = `
-          <div class="modal-card">
-            <div style="display: inline-flex; align-items: center; justify-content: center; width: 60px; height: 60px; border-radius: 50%; background: #EFF6FF; color: #2563EB; margin-bottom: 14px;">
-              ${WebCraftIcons.rocket}
+  // =========================================================================
+  // MULTI-ACCOUNT AUTHENTICATION & ONBOARDING MODAL (Persistent Sessions)
+  // =========================================================================
+  function showAuthModal(defaultTab = 'login') {
+    let modal = document.getElementById('webcraftAuthModal');
+    if (modal) modal.remove();
+
+    const accounts = WebCraftStorage.getAllAccounts();
+    const hasExistingAccounts = accounts.length > 0;
+    const initialTab = hasExistingAccounts ? defaultTab : 'register';
+
+    modal = document.createElement('div');
+    modal.id = 'webcraftAuthModal';
+    modal.className = 'modal-backdrop active';
+
+    // Build Saved Accounts list for quick 1-click selection
+    let savedAccountsHtml = '';
+    if (accounts.length > 0) {
+      savedAccountsHtml = `
+        <div style="margin-bottom: 16px; text-align: left;">
+          <div style="font-size: 11.5px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px;">
+            Saved Profiles on this PC:
+          </div>
+          <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+            ${accounts.map(acc => `
+              <button type="button" class="quick-acc-btn" data-username="${escapeHtml(acc.username)}" style="display: flex; align-items: center; gap: 6px; padding: 6px 12px; background: #F8FAFC; border: 1.5px solid var(--border-light); border-radius: var(--radius-pill); cursor: pointer; font-size: 12.5px; font-weight: 700; color: #0F172A;">
+                <span style="display: inline-block; width: 22px; height: 22px; border-radius: 50%; background: #EFF6FF; color: #2563EB; font-size: 10px; font-weight: 800; line-height: 22px; text-align: center; overflow: hidden;">
+                  ${acc.photo ? `<img src="${acc.photo}" style="width:100%;height:100%;object-fit:cover;" />` : acc.avatar}
+                </span>
+                <span>${escapeHtml(acc.name)}</span>
+                <span style="font-size: 10.5px; color: var(--text-muted); font-weight: 600;">(Lv ${acc.level})</span>
+              </button>
+            `).join('')}
+          </div>
+        </div>
+      `;
+    }
+
+    modal.innerHTML = `
+      <div class="modal-card" style="max-width: 500px; padding: 28px 24px; text-align: left;">
+        <div style="text-align: center; margin-bottom: 18px;">
+          <img src="${getRootPath()}assets/logo.png" alt="WebCraft Logo" onerror="this.src='${getRootPath()}assets/favicon.svg'" style="height: 46px; margin: 0 auto 6px;" />
+          <h2 style="font-size: 22px; color: #0F172A; margin-bottom: 4px;">Welcome to WebCraft!</h2>
+          <p style="color: var(--text-muted); font-size: 13px;">Save your coding progress, XP, and get your graduation certificate.</p>
+        </div>
+
+        <!-- Auth Tabs Switcher -->
+        <div class="auth-tabs" style="display: flex; border-bottom: 2px solid #E2E8F0; margin-bottom: 20px;">
+          <button type="button" id="authTabLoginBtn" class="auth-tab-btn ${initialTab === 'login' ? 'active' : ''}" style="flex: 1; padding: 10px; text-align: center; font-weight: 800; font-size: 14px; border: none; background: none; cursor: pointer; border-bottom: 3px solid ${initialTab === 'login' ? 'var(--primary-blue)' : 'transparent'}; color: ${initialTab === 'login' ? 'var(--primary-blue)' : 'var(--text-muted)'};">
+            Log In
+          </button>
+          <button type="button" id="authTabRegisterBtn" class="auth-tab-btn ${initialTab === 'register' ? 'active' : ''}" style="flex: 1; padding: 10px; text-align: center; font-weight: 800; font-size: 14px; border: none; background: none; cursor: pointer; border-bottom: 3px solid ${initialTab === 'register' ? 'var(--primary-blue)' : 'transparent'}; color: ${initialTab === 'register' ? 'var(--primary-blue)' : 'var(--text-muted)'};">
+            Create Account
+          </button>
+        </div>
+
+        <!-- TAB 1: LOG IN -->
+        <div id="authLoginTabContent" style="display: ${initialTab === 'login' ? 'block' : 'none'};">
+          ${savedAccountsHtml}
+
+          <div style="margin-bottom: 14px;">
+            <label for="loginUsernameInput" style="display: block; font-size: 12.5px; font-weight: 700; color: var(--text-muted); margin-bottom: 6px;">
+              Username or Full Name:
+            </label>
+            <input type="text" id="loginUsernameInput" placeholder="e.g. rahul1 or Rahul Sharma" style="width: 100%; padding: 11px 14px; border: 1.5px solid var(--border-light); border-radius: var(--radius-md); font-size: 14px; font-weight: 600; outline: none;" />
+          </div>
+
+          <div style="margin-bottom: 18px;">
+            <label for="loginPasswordInput" style="display: block; font-size: 12.5px; font-weight: 700; color: var(--text-muted); margin-bottom: 6px;">
+              Password / PIN:
+            </label>
+            <input type="password" id="loginPasswordInput" placeholder="Enter your password..." style="width: 100%; padding: 11px 14px; border: 1.5px solid var(--border-light); border-radius: var(--radius-md); font-size: 14px; font-weight: 600; outline: none;" />
+          </div>
+
+          <div id="loginErrorMsg" style="display: none; color: #EF4444; font-size: 12.5px; font-weight: 700; margin-bottom: 14px; background: #FEF2F2; padding: 8px 12px; border-radius: 6px;"></div>
+
+          <button class="btn btn-primary btn-lg" id="submitLoginBtn" style="width: 100%;">
+            LOG IN TO WEBCRAFT
+          </button>
+        </div>
+
+        <!-- TAB 2: CREATE ACCOUNT -->
+        <div id="authRegisterTabContent" style="display: ${initialTab === 'register' ? 'block' : 'none'};">
+          <div style="margin-bottom: 12px;">
+            <label for="regNameInput" style="display: block; font-size: 12.5px; font-weight: 700; color: var(--text-muted); margin-bottom: 5px;">
+              Full Name <span style="color:#EF4444;">*</span> (Printed on Official Certificate):
+            </label>
+            <input type="text" id="regNameInput" placeholder="e.g. Rahul Sharma" style="width: 100%; padding: 11px 14px; border: 1.5px solid var(--border-light); border-radius: var(--radius-md); font-size: 14px; font-weight: 600; outline: none;" required />
+          </div>
+
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 12px;">
+            <div>
+              <label for="regUsernameInput" style="display: block; font-size: 12px; font-weight: 700; color: var(--text-muted); margin-bottom: 5px;">
+                Choose Username <span style="color:#EF4444;">*</span>:
+              </label>
+              <input type="text" id="regUsernameInput" placeholder="e.g. rahul123" style="width: 100%; padding: 11px 12px; border: 1.5px solid var(--border-light); border-radius: var(--radius-md); font-size: 13.5px; font-weight: 600; outline: none;" required />
             </div>
-            <h2 style="font-size: 24px; margin-bottom: 6px;">Welcome to WebCraft!</h2>
-            <p style="color: var(--text-muted); font-size: 13.5px; margin-bottom: 18px;">
-              Ready to learn HTML, CSS & JavaScript? Enter your name to get started.
-            </p>
+
+            <div>
+              <label for="regPasswordInput" style="display: block; font-size: 12px; font-weight: 700; color: var(--text-muted); margin-bottom: 5px;">
+                Password / PIN <span style="color:#EF4444;">*</span>:
+              </label>
+              <input type="password" id="regPasswordInput" placeholder="At least 3 characters" style="width: 100%; padding: 11px 12px; border: 1.5px solid var(--border-light); border-radius: var(--radius-md); font-size: 13.5px; font-weight: 600; outline: none;" required />
+            </div>
+          </div>
+
+          <!-- Photo Upload / Avatar Picker -->
+          <div style="margin-bottom: 16px;">
+            <label style="display: block; font-size: 12px; font-weight: 700; color: var(--text-muted); margin-bottom: 6px;">
+              Profile Photo (Laptop File / Mobile Gallery) or Avatar:
+            </label>
             
-            <div style="margin-bottom: 12px; text-align: left;">
-              <label for="onboardNameInput" style="display: block; font-size: 12.5px; font-weight: 700; color: var(--text-muted); margin-bottom: 6px;">
-                Your Name <span style="color:#EF4444;">*</span>
-              </label>
-              <input type="text" id="onboardNameInput" placeholder="Enter your full name..." style="width: 100%; padding: 12px 14px; border: 1.5px solid var(--border-light); border-radius: var(--radius-md); font-size: 14.5px; font-weight: 600; color: var(--text-main); outline: none;" required />
-              <div id="onboardError" style="display: none; color: #EF4444; font-size: 12px; font-weight: 700; margin-top: 5px;">
-                Please enter your name to continue!
+            <input type="file" id="regFileInput" accept="image/*" style="display: none;" />
+
+            <div style="display: flex; gap: 8px; align-items: center; flex-wrap: wrap;">
+              <button type="button" class="btn btn-secondary btn-sm" id="regUploadPhotoBtn" style="font-size: 12px;">
+                Upload Photo
+              </button>
+              
+              <div style="display: flex; gap: 4px;">
+                <button type="button" class="reg-avatar-btn active" data-avatar="WC" style="font-size: 12px; font-weight:800; padding: 5px 10px; border-radius: 6px; cursor: pointer; background: #EFF6FF; border: 2px solid var(--primary-blue); color: #2563EB;">WC</button>
+                <button type="button" class="reg-avatar-btn" data-avatar="DEV" style="font-size: 12px; font-weight:800; padding: 5px 10px; border-radius: 6px; cursor: pointer; background: white; border: 1.5px solid var(--border-light);">DEV</button>
+                <button type="button" class="reg-avatar-btn" data-avatar="JS" style="font-size: 12px; font-weight:800; padding: 5px 10px; border-radius: 6px; cursor: pointer; background: white; border: 1.5px solid var(--border-light);">JS</button>
+                <button type="button" class="reg-avatar-btn" data-avatar="CSS" style="font-size: 12px; font-weight:800; padding: 5px 10px; border-radius: 6px; cursor: pointer; background: white; border: 1.5px solid var(--border-light);">CSS</button>
+                <button type="button" class="reg-avatar-btn" data-avatar="HTML" style="font-size: 12px; font-weight:800; padding: 5px 10px; border-radius: 6px; cursor: pointer; background: white; border: 1.5px solid var(--border-light);">HTML</button>
               </div>
             </div>
 
-            <!-- Choose Avatar Badge or Photo -->
-            <div style="margin-bottom: 20px;">
-              <label style="display: block; font-size: 12.5px; font-weight: 700; color: var(--text-muted); margin-bottom: 8px; text-align: left;">
-                Choose Avatar Badge:
-              </label>
-              <div style="display: flex; gap: 6px; justify-content: center;">
-                <button type="button" class="avatar-pick-btn active" data-avatar="WC" style="font-weight: 800; font-size: 13px; padding: 8px 14px; border: 2px solid var(--primary-blue); border-radius: 8px; background: #EFF6FF; color: #2563EB; cursor: pointer;">WC</button>
-                <button type="button" class="avatar-pick-btn" data-avatar="DEV" style="font-weight: 800; font-size: 13px; padding: 8px 14px; border: 1.5px solid var(--border-light); border-radius: 8px; background: white; color: var(--text-main); cursor: pointer;">DEV</button>
-                <button type="button" class="avatar-pick-btn" data-avatar="JS" style="font-weight: 800; font-size: 13px; padding: 8px 14px; border: 1.5px solid var(--border-light); border-radius: 8px; background: white; color: var(--text-main); cursor: pointer;">JS</button>
-                <button type="button" class="avatar-pick-btn" data-avatar="CSS" style="font-weight: 800; font-size: 13px; padding: 8px 14px; border: 1.5px solid var(--border-light); border-radius: 8px; background: white; color: var(--text-main); cursor: pointer;">CSS</button>
-                <button type="button" class="avatar-pick-btn" data-avatar="HTML" style="font-weight: 800; font-size: 13px; padding: 8px 14px; border: 1.5px solid var(--border-light); border-radius: 8px; background: white; color: var(--text-main); cursor: pointer;">HTML</button>
+            <!-- Preview Wrap -->
+            <div id="regPhotoPreviewWrap" style="display: none; margin-top: 8px;">
+              <div style="display: flex; align-items: center; gap: 8px;">
+                <img id="regPhotoPreviewImg" src="" alt="Photo" style="width: 38px; height: 38px; border-radius: 50%; object-fit: cover; border: 2px solid var(--primary-blue);" />
+                <span style="font-size: 11.5px; color: var(--green); font-weight: 700;">Photo added!</span>
+                <button type="button" id="regRemovePhotoBtn" style="background:none; border:none; color:#EF4444; font-size:11.5px; cursor:pointer; font-weight:700;">Remove</button>
               </div>
             </div>
+          </div>
 
-            <button class="btn btn-primary btn-lg" id="onboardSubmitBtn" style="width: 100%;">
-              START WEBCRAFT
+          <div id="regErrorMsg" style="display: none; color: #EF4444; font-size: 12.5px; font-weight: 700; margin-bottom: 12px; background: #FEF2F2; padding: 8px 12px; border-radius: 6px;"></div>
+
+          <button class="btn btn-primary btn-lg" id="submitRegisterBtn" style="width: 100%;">
+            CREATE ACCOUNT & START
+          </button>
+        </div>
+
+        ${WebCraftStorage.isLoggedIn() ? `
+          <div style="text-align: center; margin-top: 14px;">
+            <button type="button" id="authModalCloseBtn" style="background: none; border: none; font-size: 13px; color: var(--text-muted); cursor: pointer; font-weight: 700;">
+              ✕ Close / Keep current session
             </button>
           </div>
-        `;
-        document.body.appendChild(modal);
+        ` : ''}
+      </div>
+    `;
 
-        let selectedAvatar = 'WC';
-        modal.querySelectorAll('.avatar-pick-btn').forEach(btn => {
-          btn.addEventListener('click', () => {
-            modal.querySelectorAll('.avatar-pick-btn').forEach(b => {
-              b.style.borderColor = 'var(--border-light)';
-              b.style.background = 'white';
-            });
-            btn.style.borderColor = 'var(--primary-blue)';
-            btn.style.background = '#EFF6FF';
-            selectedAvatar = btn.getAttribute('data-avatar');
-            WebCraftAudio.click();
-          });
-        });
+    document.body.appendChild(modal);
 
-        const nameInput = document.getElementById('onboardNameInput');
-        const errorEl = document.getElementById('onboardError');
+    // Tab switching logic
+    const tabLoginBtn = document.getElementById('authTabLoginBtn');
+    const tabRegBtn = document.getElementById('authTabRegisterBtn');
+    const loginContent = document.getElementById('authLoginTabContent');
+    const regContent = document.getElementById('authRegisterTabContent');
 
-        function submitOnboarding() {
-          const rawName = nameInput.value.trim();
-          if (!rawName || rawName.length < 2) {
-            errorEl.style.display = 'block';
-            nameInput.style.borderColor = '#EF4444';
-            nameInput.focus();
-            WebCraftAudio.error();
-            return;
-          }
+    function switchTab(tab) {
+      if (tab === 'login') {
+        tabLoginBtn.style.borderBottom = '3px solid var(--primary-blue)';
+        tabLoginBtn.style.color = 'var(--primary-blue)';
+        tabRegBtn.style.borderBottom = '3px solid transparent';
+        tabRegBtn.style.color = 'var(--text-muted)';
+        loginContent.style.display = 'block';
+        regContent.style.display = 'none';
+      } else {
+        tabRegBtn.style.borderBottom = '3px solid var(--primary-blue)';
+        tabRegBtn.style.color = 'var(--primary-blue)';
+        tabLoginBtn.style.borderBottom = '3px solid transparent';
+        tabLoginBtn.style.color = 'var(--text-muted)';
+        regContent.style.display = 'block';
+        loginContent.style.display = 'none';
+      }
+    }
 
-          errorEl.style.display = 'none';
-          WebCraftStorage.setUser({ name: rawName, avatar: selectedAvatar, photo: null });
-          modal.classList.remove('active');
-          setTimeout(() => modal.remove(), 300);
-          WebCraftAudio.levelUp();
-          launchConfetti();
-          showToast(`Welcome, ${rawName}! Your coding journey starts now.`, 'success', 'sparkle');
-          updateHeaderStats();
+    tabLoginBtn?.addEventListener('click', () => { switchTab('login'); WebCraftAudio.click(); });
+    tabRegBtn?.addEventListener('click', () => { switchTab('register'); WebCraftAudio.click(); });
+
+    // Quick account buttons fill username
+    modal.querySelectorAll('.quick-acc-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const username = btn.getAttribute('data-username');
+        const loginUserInput = document.getElementById('loginUsernameInput');
+        const loginPassInput = document.getElementById('loginPasswordInput');
+        if (loginUserInput) {
+          loginUserInput.value = username;
+          loginPassInput?.focus();
+          WebCraftAudio.click();
         }
+      });
+    });
 
-        document.getElementById('onboardSubmitBtn').addEventListener('click', submitOnboarding);
-        nameInput.addEventListener('keydown', (e) => {
-          if (e.key === 'Enter') submitOnboarding();
+    // Photo Upload Registration logic
+    let regPhotoBase64 = null;
+    let selectedRegAvatar = 'WC';
+
+    const regFileInput = document.getElementById('regFileInput');
+    const regUploadBtn = document.getElementById('regUploadPhotoBtn');
+    const regRemovePhotoBtn = document.getElementById('regRemovePhotoBtn');
+    const regPreviewWrap = document.getElementById('regPhotoPreviewWrap');
+    const regPreviewImg = document.getElementById('regPhotoPreviewImg');
+
+    regUploadBtn?.addEventListener('click', () => regFileInput?.click());
+
+    regFileInput?.addEventListener('change', (e) => {
+      const file = e.target.files[0];
+      if (file) {
+        compressImage(file, (base64) => {
+          regPhotoBase64 = base64;
+          regPreviewImg.src = base64;
+          regPreviewWrap.style.display = 'block';
+          WebCraftAudio.success();
         });
       }
+    });
+
+    regRemovePhotoBtn?.addEventListener('click', () => {
+      regPhotoBase64 = null;
+      regPreviewWrap.style.display = 'none';
+      if (regFileInput) regFileInput.value = '';
+    });
+
+    modal.querySelectorAll('.reg-avatar-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        modal.querySelectorAll('.reg-avatar-btn').forEach(b => {
+          b.style.borderColor = 'var(--border-light)';
+          b.style.background = 'white';
+          b.style.color = 'var(--text-main)';
+        });
+        btn.style.borderColor = 'var(--primary-blue)';
+        btn.style.background = '#EFF6FF';
+        btn.style.color = '#2563EB';
+        selectedRegAvatar = btn.getAttribute('data-avatar');
+        WebCraftAudio.click();
+      });
+    });
+
+    // Handle Login Submit
+    const submitLoginBtn = document.getElementById('submitLoginBtn');
+    const loginUserInput = document.getElementById('loginUsernameInput');
+    const loginPassInput = document.getElementById('loginPasswordInput');
+    const loginError = document.getElementById('loginErrorMsg');
+
+    function performLogin() {
+      const userVal = loginUserInput.value.trim();
+      const passVal = loginPassInput.value.trim();
+
+      if (!userVal || !passVal) {
+        loginError.innerText = 'Please enter both username and password.';
+        loginError.style.display = 'block';
+        WebCraftAudio.error();
+        return;
+      }
+
+      const res = WebCraftStorage.login(userVal, passVal);
+      if (!res.success) {
+        loginError.innerText = res.error;
+        loginError.style.display = 'block';
+        WebCraftAudio.error();
+        return;
+      }
+
+      loginError.style.display = 'none';
+      modal.classList.remove('active');
+      setTimeout(() => modal.remove(), 300);
+      WebCraftAudio.success();
+      showToast(`Welcome back, ${res.account.name}! Your account is loaded.`, 'success', 'sparkle');
+      updateHeaderStats();
+      setTimeout(() => window.location.reload(), 500);
+    }
+
+    submitLoginBtn?.addEventListener('click', performLogin);
+    loginPassInput?.addEventListener('keydown', (e) => { if (e.key === 'Enter') performLogin(); });
+
+    // Handle Register Submit
+    const submitRegBtn = document.getElementById('submitRegisterBtn');
+    const regNameInput = document.getElementById('regNameInput');
+    const regUsernameInput = document.getElementById('regUsernameInput');
+    const regPasswordInput = document.getElementById('regPasswordInput');
+    const regError = document.getElementById('regErrorMsg');
+
+    function performRegister() {
+      const nameVal = regNameInput.value.trim();
+      const userVal = regUsernameInput.value.trim();
+      const passVal = regPasswordInput.value.trim();
+
+      const res = WebCraftStorage.register({
+        name: nameVal,
+        username: userVal,
+        password: passVal,
+        avatar: selectedRegAvatar,
+        photo: regPhotoBase64
+      });
+
+      if (!res.success) {
+        regError.innerText = res.error;
+        regError.style.display = 'block';
+        WebCraftAudio.error();
+        return;
+      }
+
+      regError.style.display = 'none';
+      modal.classList.remove('active');
+      setTimeout(() => modal.remove(), 300);
+      WebCraftAudio.levelUp();
+      launchConfetti();
+      showToast(`Account created! Welcome to WebCraft, ${res.account.name}!`, 'success', 'trophy');
+      updateHeaderStats();
+      setTimeout(() => window.location.reload(), 600);
+    }
+
+    submitRegBtn?.addEventListener('click', performRegister);
+    regPasswordInput?.addEventListener('keydown', (e) => { if (e.key === 'Enter') performRegister(); });
+
+    // Close button if already logged in
+    document.getElementById('authModalCloseBtn')?.addEventListener('click', () => {
+      modal.classList.remove('active');
+      setTimeout(() => modal.remove(), 300);
+    });
+  }
+
+  function checkSession() {
+    if (!WebCraftStorage.isLoggedIn()) {
+      showAuthModal('register');
     }
   }
 
@@ -382,11 +723,15 @@ const WebCraftApp = (function () {
     const stats = WebCraftStorage.getStats();
     const xpEl = document.getElementById('headerXP');
     const levelEl = document.getElementById('headerLevel');
-    const avatarEl = document.getElementById('headerAvatar');
+    const avatarBtn = document.getElementById('headerAvatarBtn');
+    const dropdownName = document.getElementById('dropdownUserName');
+    const dropdownHandle = document.getElementById('dropdownUserHandle');
 
     if (xpEl) xpEl.innerText = `${stats.xp} XP`;
     if (levelEl) levelEl.innerText = `Lv ${stats.level.currentLevel}`;
-    if (avatarEl) avatarEl.innerHTML = getAvatarHtml(stats.user);
+    if (avatarBtn) avatarBtn.innerHTML = getAvatarHtml(stats.user);
+    if (dropdownName) dropdownName.innerText = stats.user.name || 'Web Explorer';
+    if (dropdownHandle) dropdownHandle.innerText = stats.user.username || 'learner';
   }
 
   function setupGlobalListeners() {
@@ -413,6 +758,10 @@ const WebCraftApp = (function () {
     window.addEventListener('webcraft:user_updated', () => {
       updateHeaderStats();
     });
+
+    window.addEventListener('webcraft:auth_changed', () => {
+      updateHeaderStats();
+    });
   }
 
   return {
@@ -420,8 +769,9 @@ const WebCraftApp = (function () {
       renderHeader(activePage);
       renderFooter();
       setupGlobalListeners();
-      checkOnboarding();
+      checkSession();
     },
+    showAuthModal: showAuthModal,
     toast: showToast,
     confetti: launchConfetti,
     updateStats: updateHeaderStats
