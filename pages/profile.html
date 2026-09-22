@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Learner Profile & Graduation Certificate — WebCraft</title>
+  <link rel="icon" type="image/svg+xml" href="../assets/favicon.svg">
+  <link rel="stylesheet" href="../css/style.css">
+  <link rel="stylesheet" href="../css/responsive.css">
+</head>
+<body>
+
+  <!-- Universal Header -->
+  <div id="webcraft-header" class="no-print"></div>
+
+  <main class="container" style="padding-top: 24px; margin-bottom: 50px;">
+    <!-- Profile Info Card -->
+    <div class="card card-top-purple no-print" style="margin-bottom: 24px; padding: 24px;">
+      <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px;">
+        <div style="display: flex; align-items: center; gap: 16px;">
+          <!-- Profile Avatar / Photo Container -->
+          <div style="width: 76px; height: 76px; border-radius: 50%; background: #EFF6FF; border: 2.5px solid #BFDBFE; display: flex; align-items: center; justify-content: center; overflow: hidden; box-shadow: 0 4px 12px rgba(37, 99, 235, 0.15);" id="profileAvatarDisplay">
+            <span style="font-size: 20px; font-weight: 800; color: #2563EB;">WC</span>
+          </div>
+          <div>
+            <h1 style="font-size: 24px; margin-bottom: 4px;" id="profileNameDisplay">Web Explorer</h1>
+            <div style="font-size: 13.5px; font-weight: 700; color: #B45309;" id="profileLevelTitle">Level 1: Code Beginner</div>
+            <div style="font-size: 11.5px; color: var(--text-muted); margin-top: 2px;" id="profileJoinedDate">Member since 2026</div>
+          </div>
+        </div>
+
+        <button class="btn btn-secondary btn-sm" id="editProfileBtn">
+          Edit Profile / Photo
+        </button>
+      </div>
+
+      <!-- Overall Progress Bar -->
+      <div style="margin-top: 20px;">
+        <div style="display: flex; justify-content: space-between; font-size: 12.5px; font-weight: 700; margin-bottom: 6px;">
+          <span>Overall Platform Progress</span>
+          <span id="overallProgressPercent" style="color: var(--primary-blue);">0% Complete</span>
+        </div>
+        <div style="width: 100%; height: 10px; background: #E2E8F0; border-radius: var(--radius-pill); overflow: hidden;">
+          <div id="overallProgressBar" style="height: 100%; background: var(--primary-blue); width: 0%; transition: width 0.4s ease;"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Category Progress Breakdown Cards -->
+    <div class="tracks-grid no-print" style="margin-bottom: 30px;">
+      <div class="card card-top-orange">
+        <h3 style="font-size: 16px; margin-bottom: 4px;">HTML Progress</h3>
+        <p id="htmlProgressText" style="font-size: 12.5px; color: var(--text-muted); margin-bottom: 10px;">0 / 10 Modules</p>
+        <div style="width: 100%; height: 6px; background: #E2E8F0; border-radius: var(--radius-pill); overflow: hidden;">
+          <div id="htmlProgressFill" style="height: 100%; background: #F97316; width: 0%;"></div>
+        </div>
+      </div>
+
+      <div class="card card-top-sky">
+        <h3 style="font-size: 16px; margin-bottom: 4px;">CSS Progress</h3>
+        <p id="cssProgressText" style="font-size: 12.5px; color: var(--text-muted); margin-bottom: 10px;">0 / 10 Modules</p>
+        <div style="width: 100%; height: 6px; background: #E2E8F0; border-radius: var(--radius-pill); overflow: hidden;">
+          <div id="cssProgressFill" style="height: 100%; background: #38BDF8; width: 0%;"></div>
+        </div>
+      </div>
+
+      <div class="card card-top-yellow">
+        <h3 style="font-size: 16px; margin-bottom: 4px;">JavaScript Progress</h3>
+        <p id="jsProgressText" style="font-size: 12.5px; color: var(--text-muted); margin-bottom: 10px;">0 / 12 Modules</p>
+        <div style="width: 100%; height: 6px; background: #E2E8F0; border-radius: var(--radius-pill); overflow: hidden;">
+          <div id="jsProgressFill" style="height: 100%; background: #FACC15; width: 0%;"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Official Graduation Certificate Header -->
+    <div class="section-header no-print">
+      <span class="section-tag">Graduation Honors</span>
+      <h2 class="section-title">Official WebCraft Certificate</h2>
+      <p class="section-desc">Issued to every student who masters web development on WebCraft.</p>
+    </div>
+
+    <!-- Official Diploma Certificate -->
+    <div class="official-certificate-container">
+      <div class="cert-inner-frame">
+        <!-- Logo -->
+        <img src="../assets/logo.png" alt="WebCraft Master Seal Logo" class="cert-header-logo" onerror="this.src='../assets/favicon.svg'" />
+        
+        <div class="cert-main-title">Certificate of Web Development Mastery</div>
+        <div class="cert-subtitle">College Community Engagement Project • B.Sc. Computer Science</div>
+
+        <!-- Student Photo on Certificate -->
+        <div class="cert-recipient-photo" id="certAvatarPhoto">
+          <span style="font-size: 18px; font-weight: 800; color: #2563EB;">WC</span>
+        </div>
+
+        <div style="font-size: 13.5px; color: #64748B; margin-top: 4px;">This is to proudly certify that</div>
+
+        <div class="cert-student-name" id="certName">
+          Web Explorer
+        </div>
+
+        <p class="cert-citation">
+          has successfully completed interactive training in <strong>HTML5 Structure</strong>, <strong>CSS3 Styling & Responsive Web Design</strong>, and <strong>JavaScript Dynamic Logic</strong>, demonstrating proficiency in building responsive web applications independently.
+        </p>
+
+        <!-- Certificate Verification Footer Grid -->
+        <div class="cert-bottom-grid">
+          <!-- Date & Serial -->
+          <div class="cert-meta-item">
+            <div style="font-size: 11px; font-weight: 800; color: #64748B; text-transform: uppercase;">Date of Issue</div>
+            <div style="font-size: 13.5px; font-weight: 700; color: #0F172A; margin-top: 2px;" id="certDate">September 22, 2026</div>
+            <div style="font-size: 11px; color: #94A3B8; margin-top: 4px;">ID: <span id="certId">WC-CEP-2026</span></div>
+          </div>
+
+          <!-- Official Golden Verified Seal -->
+          <div class="official-gold-seal">
+            <div class="seal-rosette">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+              <div style="font-size: 8.5px; font-weight: 900; line-height: 1;">WEBCRAFT</div>
+              <div style="font-size: 7px; opacity: 0.85;">VERIFIED SEAL</div>
+            </div>
+          </div>
+
+          <!-- Authorized Signature -->
+          <div class="cert-meta-item">
+            <div style="font-family: 'Brush Script MT', cursive, sans-serif; font-size: 22px; color: #1E3A8A; line-height: 1;">
+              Project Lead
+            </div>
+            <div class="cert-sign-line"></div>
+            <div style="font-size: 11px; font-weight: 800; color: #64748B; text-transform: uppercase;">Project Coordinator</div>
+            <div style="font-size: 10px; color: #94A3B8;">Dept. of Computer Science</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Certificate Actions -->
+    <div style="text-align: center; margin-top: 20px;" class="no-print">
+      <button class="btn btn-primary btn-lg" id="printCertBtn">
+        Print / Save Certificate as PDF
+      </button>
+    </div>
+  </main>
+
+  <!-- Edit Profile & Photo Upload Modal -->
+  <div class="modal-backdrop" id="editProfileModal">
+    <div class="modal-card" style="text-align: left;">
+      <h2 style="font-size: 20px; margin-bottom: 16px; text-align: center;">Customize Your Profile & Photo</h2>
+      
+      <!-- Name Input -->
+      <div style="margin-bottom: 16px;">
+        <label for="editNameInput" style="display: block; font-size: 12.5px; font-weight: 700; color: var(--text-muted); margin-bottom: 6px;">
+          Your Full Name <span style="color:#EF4444;">*</span>:
+        </label>
+        <input type="text" id="editNameInput" style="width: 100%; padding: 12px; border: 1.5px solid var(--border-light); border-radius: var(--radius-md); font-size: 15px; font-weight: 600; outline: none;" required />
+      </div>
+
+      <!-- Real Photo Upload (Laptop File System / Mobile Gallery & Camera) -->
+      <div style="margin-bottom: 18px;">
+        <label style="display: block; font-size: 12.5px; font-weight: 700; color: var(--text-muted); margin-bottom: 6px;">
+          Profile Photo (Laptop File / Mobile Gallery):
+        </label>
+        
+        <!-- Hidden real file input -->
+        <input type="file" id="avatarFileInput" accept="image/*" style="display: none;" />
+        
+        <div style="display: flex; gap: 10px; align-items: center;">
+          <button type="button" class="btn btn-secondary btn-sm" id="uploadPhotoBtn">
+            Choose Photo from Device
+          </button>
+          <button type="button" class="btn btn-sm" id="removePhotoBtn" style="background:#FEE2E2; color:#DC2626; border:none;">
+            Remove
+          </button>
+        </div>
+
+        <!-- Photo preview thumbnail -->
+        <div id="photoPreviewWrap" style="display: none; margin-top: 10px;">
+          <div style="display: flex; align-items: center; gap: 10px;">
+            <img id="photoPreviewImg" src="" alt="Preview" style="width: 50px; height: 50px; border-radius: 50%; object-fit: cover; border: 2px solid var(--primary-blue);" />
+            <span style="font-size: 12px; color: var(--green); font-weight: 700;">Photo selected successfully!</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Or Choose Avatar Badge -->
+      <div style="margin-bottom: 20px;">
+        <label style="display: block; font-size: 12.5px; font-weight: 700; color: var(--text-muted); margin-bottom: 6px;">
+          Or Choose Avatar Badge:
+        </label>
+        <div style="display: flex; gap: 6px; justify-content: flex-start;">
+          <button type="button" class="avatar-select-btn" data-avatar="WC" style="font-size: 13px; font-weight:800; padding: 8px 14px; border-radius: 8px; cursor: pointer; background: white; border: 1px solid var(--border-light);">WC</button>
+          <button type="button" class="avatar-select-btn" data-avatar="DEV" style="font-size: 13px; font-weight:800; padding: 8px 14px; border-radius: 8px; cursor: pointer; background: white; border: 1px solid var(--border-light);">DEV</button>
+          <button type="button" class="avatar-select-btn" data-avatar="JS" style="font-size: 13px; font-weight:800; padding: 8px 14px; border-radius: 8px; cursor: pointer; background: white; border: 1px solid var(--border-light);">JS</button>
+          <button type="button" class="avatar-select-btn" data-avatar="CSS" style="font-size: 13px; font-weight:800; padding: 8px 14px; border-radius: 8px; cursor: pointer; background: white; border: 1px solid var(--border-light);">CSS</button>
+          <button type="button" class="avatar-select-btn" data-avatar="HTML" style="font-size: 13px; font-weight:800; padding: 8px 14px; border-radius: 8px; cursor: pointer; background: white; border: 1px solid var(--border-light);">HTML</button>
+        </div>
+      </div>
+
+      <!-- Modal Action Buttons -->
+      <div style="display: flex; gap: 8px;">
+        <button class="btn btn-secondary btn-lg" id="cancelProfileBtn" style="flex: 1;">Cancel</button>
+        <button class="btn btn-primary btn-lg" id="saveProfileBtn" style="flex: 1;">Save Changes</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Universal Footer -->
+  <div id="webcraft-footer" class="no-print"></div>
+
+  <!-- Scripts -->
+  <script src="../js/icons.js"></script>
+  <script src="../js/audio.js"></script>
+  <script src="../js/storage.js"></script>
+  <script src="../js/data.js"></script>
+  <script src="../js/app.js"></script>
+  <script src="../js/profile.js"></script>
+</body>
+</html>

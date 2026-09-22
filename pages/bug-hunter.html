@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bug Hunter Arena — WebCraft Code Debugging</title>
+  <link rel="icon" type="image/svg+xml" href="../assets/favicon.svg">
+  <link rel="stylesheet" href="../css/style.css">
+  <link rel="stylesheet" href="../css/responsive.css">
+</head>
+<body>
+
+  <!-- Universal Header -->
+  <div id="webcraft-header"></div>
+
+  <main class="container">
+    <div class="bug-arena-wrapper">
+      <!-- Arena Header -->
+      <div class="bug-header-bar">
+        <div>
+          <span class="section-tag" style="background: #FEE2E2; color: #DC2626;">Code Debugging Arena</span>
+          <h1 style="font-size: 26px; margin-top: 4px;" id="bugTitle">Level 1: The Broken Tag</h1>
+          <span style="font-size: 13px; font-weight: 700; color: var(--text-muted);" id="bugCategory">HTML Syntax • Easy</span>
+        </div>
+
+        <!-- Live Game Stats -->
+        <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
+          <div class="stat-pill" style="background: #FEF2F2; color: #DC2626; border: 1px solid #FECACA;">
+            Time: <span id="bugTimer">00:00</span>
+          </div>
+          <div class="stat-pill" style="background: #F0FDF4; color: #16A34A; border: 1px solid #BBF7D0;">
+            Attempts: <span id="bugAttempts">0</span>
+          </div>
+          <div class="stat-pill xp-pill" id="bugXp" style="font-size: 13.5px; padding: 6px 14px;">
+            +200 XP
+          </div>
+        </div>
+      </div>
+
+      <!-- Level Selector Toolbar -->
+      <div style="display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 20px;" id="bugLevelSelector">
+        <!-- Populated by bug-hunter.js -->
+      </div>
+
+      <!-- Bug Incident Box -->
+      <div class="bug-story-box">
+        <div style="font-size: 12px; font-weight: 800; color: #DC2626; text-transform: uppercase; margin-bottom: 4px;">
+          Incident Description
+        </div>
+        <p id="bugStory" style="color: #991B1B; font-size: 14px; margin: 0; font-weight: 600;"></p>
+      </div>
+
+      <!-- Inspector Hint Box -->
+      <div id="bugHintBox" style="display: none; background: #EFF6FF; border: 1px solid #BFDBFE; color: #1E40AF; padding: 12px 18px; border-radius: var(--radius-md); margin-bottom: 18px; font-size: 13.5px;"></div>
+
+      <!-- Bug Hunter Playground Workspace -->
+      <div id="bugPlayground" style="margin-bottom: 20px;"></div>
+
+      <!-- Bottom Controls -->
+      <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; border-top: 1px solid #E2E8F0; padding-top: 16px;">
+        <button class="btn btn-secondary btn-sm" id="bugHintBtn">Inspector Hint</button>
+
+        <div style="display: flex; gap: 8px;">
+          <button class="btn btn-primary btn-lg" id="squashBugBtn" style="background: #DC2626;">
+            FIX THE CODE
+          </button>
+          <button class="btn btn-secondary btn-sm" id="nextBugBtn">Next Level ▶</button>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- Universal Footer -->
+  <div id="webcraft-footer"></div>
+
+  <!-- Scripts -->
+  <script src="../js/icons.js"></script>
+  <script src="../js/audio.js"></script>
+  <script src="../js/storage.js"></script>
+  <script src="../js/data.js"></script>
+  <script src="../js/playground.js"></script>
+  <script src="../js/app.js"></script>
+  <script src="../js/bug-hunter.js"></script>
+</body>
+</html>

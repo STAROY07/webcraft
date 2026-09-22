@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Learn Web Development — WebCraft Learning Paths</title>
+  <link rel="icon" type="image/svg+xml" href="../assets/favicon.svg">
+  <link rel="stylesheet" href="../css/style.css">
+  <link rel="stylesheet" href="../css/responsive.css">
+</head>
+<body>
+
+  <!-- Universal Header -->
+  <div id="webcraft-header"></div>
+
+  <main class="container">
+    <div class="learn-layout">
+      <!-- Sidebar Navigation -->
+      <aside class="sidebar-nav">
+        <!-- Track Selector Tabs -->
+        <div class="track-selector">
+          <button class="track-tab-btn active" data-track="html">HTML</button>
+          <button class="track-tab-btn" data-track="css">CSS</button>
+          <button class="track-tab-btn" data-track="js">JS</button>
+        </div>
+
+        <div style="font-size: 11.5px; font-weight: 800; color: var(--text-muted); text-transform: uppercase; margin-bottom: 10px; letter-spacing: 0.5px;">
+          Modules Curriculum
+        </div>
+
+        <div class="lesson-list" id="lessonList">
+          <!-- Populated cleanly by learning.js -->
+        </div>
+      </aside>
+
+      <!-- Lesson Content & Interactive Sandbox -->
+      <section class="lesson-content-card">
+        <!-- Lesson Header -->
+        <div class="lesson-header">
+          <div>
+            <span class="section-tag" style="margin-bottom: 6px;">WebCraft Interactive Classroom</span>
+            <h1 style="font-size: 24px;" id="lessonTitle">Loading Lesson...</h1>
+          </div>
+          <div class="stat-pill xp-pill" id="lessonBadge" style="font-size: 13.5px; padding: 6px 14px;">
+            +50 XP
+          </div>
+        </div>
+
+        <!-- Explanations: Child-friendly vs Dev Explanation -->
+        <div class="lesson-explanations">
+          <div class="explain-box">
+            <h3 style="font-size: 15px; margin-bottom: 6px; color: var(--primary-blue);">
+              Concept Explanation
+            </h3>
+            <p id="lessonChildDesc" style="font-size: 13.5px; color: var(--text-main);"></p>
+          </div>
+          <div class="explain-box dev-box">
+            <h3 style="font-size: 15px; margin-bottom: 6px; color: var(--purple);">
+              Developer Note
+            </h3>
+            <p id="lessonDevDesc" style="font-size: 13.5px; color: var(--text-main);"></p>
+          </div>
+        </div>
+
+        <!-- Task Instruction Box -->
+        <div style="background: #EFF6FF; border: 1px solid #BFDBFE; border-radius: var(--radius-md); padding: 14px 18px; margin-bottom: 18px;">
+          <div style="font-size: 11.5px; font-weight: 800; color: var(--primary-blue); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 3px;">
+            Your Coding Task
+          </div>
+          <p id="lessonTask" style="font-weight: 700; font-size: 14.5px; color: #1E3A8A; margin: 0;"></p>
+        </div>
+
+        <!-- Hint Box -->
+        <div id="hintBox" style="display: none; background: #FFFBEB; border: 1px solid #FCD34D; color: #92400E; padding: 12px 18px; border-radius: var(--radius-md); margin-bottom: 18px; font-size: 13.5px;"></div>
+
+        <!-- Interactive Playground Sandbox -->
+        <div id="lessonPlayground" style="margin-bottom: 20px;"></div>
+
+        <!-- Lesson Bottom Actions -->
+        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; border-top: 1px solid #F1F5F9; padding-top: 16px;">
+          <div style="display: flex; gap: 8px;">
+            <button class="btn btn-secondary btn-sm" id="prevLessonBtn">◀ Previous</button>
+            <button class="btn btn-secondary btn-sm" id="hintBtn">Need a Hint?</button>
+          </div>
+
+          <div style="display: flex; gap: 10px;">
+            <button class="btn btn-primary btn-lg" id="checkLessonBtn">
+              Check My Code & Earn XP
+            </button>
+            <button class="btn btn-secondary btn-sm" id="nextLessonBtn">Next ▶</button>
+          </div>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <!-- Universal Footer -->
+  <div id="webcraft-footer"></div>
+
+  <!-- Scripts -->
+  <script src="../js/icons.js"></script>
+  <script src="../js/audio.js"></script>
+  <script src="../js/storage.js"></script>
+  <script src="../js/data.js"></script>
+  <script src="../js/playground.js"></script>
+  <script src="../js/app.js"></script>
+  <script src="../js/learning.js"></script>
+</body>
+</html>

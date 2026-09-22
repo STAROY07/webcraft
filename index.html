@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>WebCraft — Small Steps. Big Websites. | Learn Web Development</title>
+  <meta name="description" content="WebCraft is an interactive web development learning platform designed for school children and beginners to master HTML, CSS, and JavaScript.">
+  <link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/responsive.css">
+</head>
+<body>
+
+  <!-- Universal Header Container -->
+  <div id="webcraft-header"></div>
+
+  <!-- Hero Section -->
+  <section class="hero-section">
+    <div class="container">
+      <div class="hero-grid">
+        <div class="hero-content">
+          <div class="hero-pill">
+            College Community Engagement Project
+          </div>
+          <h1 class="hero-title">
+            Learn Web Development <br>
+            <span class="text-gradient">Step-by-Step</span>
+          </h1>
+          <p class="hero-subtitle">
+            Master HTML, CSS and JavaScript by playing, experimenting, fixing bugs and building real responsive websites independently.
+          </p>
+          <div class="hero-actions">
+            <a href="pages/learn.html" class="btn btn-primary btn-lg">
+              START LEARNING
+            </a>
+            <a href="pages/bug-hunter.html" class="btn btn-secondary btn-lg">
+              PLAY BUG HUNTER
+            </a>
+          </div>
+        </div>
+
+        <div class="hero-illustration-wrap">
+          <!-- Floating Badges -->
+          <div class="floating-chip chip-html">HTML &lt;/&gt;</div>
+          <div class="floating-chip chip-css">CSS { }</div>
+          <div class="floating-chip chip-js">JS</div>
+
+          <img src="assets/logo.png" alt="WebCraft Platform Logo" class="hero-main-img" onerror="this.src='assets/favicon.svg'">
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Interactive Dashboard Quick Jump -->
+  <section class="container" style="margin: 10px auto 30px;" id="dashboardQuickSection">
+    <div class="card card-top-blue" style="background: linear-gradient(135deg, #FFFFFF, #F8FBFF);">
+      <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px;">
+        <div>
+          <div style="font-size: 12px; font-weight: 800; color: var(--primary-blue); text-transform: uppercase; letter-spacing: 0.5px;">
+            Learner Mission Hub
+          </div>
+          <h2 style="font-size: 22px; margin-top: 4px;" id="welcomeLearnerName">Welcome to WebCraft!</h2>
+          <p style="color: var(--text-muted); font-size: 13.5px;">Your learning path is ready. Jump right back into coding!</p>
+        </div>
+        <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+          <a href="pages/learn.html" class="btn btn-primary btn-sm">Continue Learning</a>
+          <a href="pages/practice.html" class="btn btn-secondary btn-sm">Practice Tasks</a>
+          <a href="pages/build.html" class="btn btn-gradient btn-sm">Final Project Builder</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Learning Journey Flow -->
+  <section class="container" style="padding: 30px 24px;">
+    <div class="section-header">
+      <span class="section-tag">The Proven Path</span>
+      <h2 class="section-title">Your WebCraft Journey</h2>
+      <p class="section-desc">Follow the 6-step interactive formula designed to take you from beginner to confident web creator.</p>
+    </div>
+
+    <div class="journey-steps">
+      <div class="step-card">
+        <div class="step-num">1</div>
+        <div class="step-title">LEARN</div>
+        <div class="step-desc">Interactive bite-sized concepts explained with simple analogies.</div>
+      </div>
+      <div class="step-card">
+        <div class="step-num">2</div>
+        <div class="step-title">PRACTICE</div>
+        <div class="step-desc">Small guided tasks with instant hints to build muscle memory.</div>
+      </div>
+      <div class="step-card">
+        <div class="step-num">3</div>
+        <div class="step-title">TEST</div>
+        <div class="step-desc">Engaging quizzes to verify your web knowledge and earn XP.</div>
+      </div>
+      <div class="step-card">
+        <div class="step-num">4</div>
+        <div class="step-title">DEBUG</div>
+        <div class="step-desc">Hunt down broken code and squash tricky bugs in the arena.</div>
+      </div>
+      <div class="step-card">
+        <div class="step-num">5</div>
+        <div class="step-title">BUILD</div>
+        <div class="step-desc">Create real responsive websites with live previews.</div>
+      </div>
+      <div class="step-card">
+        <div class="step-num">6</div>
+        <div class="step-title">ACHIEVE</div>
+        <div class="step-desc">Unlock badges, level up, and earn your Graduation Diploma.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- What Will You Learn Tracks -->
+  <section class="container" style="padding: 10px 24px 50px;">
+    <div class="section-header">
+      <span class="section-tag">Core Curriculum</span>
+      <h2 class="section-title">What Will You Master?</h2>
+      <p class="section-desc">The three fundamental pillars that power every website in the world.</p>
+    </div>
+
+    <div class="tracks-grid">
+      <!-- HTML Card -->
+      <div class="track-card card-top-orange">
+        <div>
+          <div class="track-badge-icon" style="background: #FFEDD5; color: #EA580C;">
+            HTML
+          </div>
+          <h3 style="font-size: 22px; margin-bottom: 8px;">HTML5 Structure</h3>
+          <p style="color: var(--text-muted); font-size: 13.5px;">
+            The skeleton of websites. Learn headings, paragraphs, images, links, forms, and semantic elements.
+          </p>
+          <div class="track-meta">
+            <span class="track-tag">10 Modules</span>
+            <span class="track-tag">+500 XP</span>
+          </div>
+        </div>
+        <a href="pages/learn.html?track=html" class="btn btn-secondary" style="width: 100%;">
+          Explore HTML Path ➔
+        </a>
+      </div>
+
+      <!-- CSS Card -->
+      <div class="track-card card-top-sky">
+        <div>
+          <div class="track-badge-icon" style="background: #E0F2FE; color: #0284C7;">
+            CSS
+          </div>
+          <h3 style="font-size: 22px; margin-bottom: 8px;">CSS3 Styling</h3>
+          <p style="color: var(--text-muted); font-size: 13.5px;">
+            The design and aesthetics. Master colors, typography, box model, flexbox, grid, and responsive queries.
+          </p>
+          <div class="track-meta">
+            <span class="track-tag">10 Modules</span>
+            <span class="track-tag">+500 XP</span>
+          </div>
+        </div>
+        <a href="pages/learn.html?track=css" class="btn btn-secondary" style="width: 100%;">
+          Explore CSS Path ➔
+        </a>
+      </div>
+
+      <!-- JS Card -->
+      <div class="track-card card-top-yellow">
+        <div>
+          <div class="track-badge-icon" style="background: #FEF3C7; color: #D97706;">
+            JS
+          </div>
+          <h3 style="font-size: 22px; margin-bottom: 8px;">JavaScript Logic</h3>
+          <p style="color: var(--text-muted); font-size: 13.5px;">
+            The brain of your page. Master variables, functions, DOM manipulation, event listeners, and interactive apps.
+          </p>
+          <div class="track-meta">
+            <span class="track-tag">12 Modules</span>
+            <span class="track-tag">+600 XP</span>
+          </div>
+        </div>
+        <a href="pages/learn.html?track=js" class="btn btn-secondary" style="width: 100%;">
+          Explore JS Path ➔
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Live Teaser Playground -->
+  <section class="container" style="margin-bottom: 60px;">
+    <div class="section-header">
+      <span class="section-tag">Learn By Doing</span>
+      <h2 class="section-title">Interactive Live Playground</h2>
+      <p class="section-desc">Type code below and see the live result update instantly. Experiment freely!</p>
+    </div>
+
+    <div id="homePlayground"></div>
+  </section>
+
+  <!-- Call to Action Banner -->
+  <section class="container" style="margin-bottom: 60px;">
+    <div class="card" style="background: linear-gradient(135deg, #2563EB, #8B5CF6); color: white; text-align: center; padding: 50px 24px; border: none; border-radius: var(--radius-xl);">
+      <h2 style="color: white; font-size: 32px; margin-bottom: 14px;">
+        Ready to Build Your First Website?
+      </h2>
+      <p style="color: rgba(255, 255, 255, 0.9); font-size: 16px; max-width: 560px; margin: 0 auto 26px;">
+        Join WebCraft today. Start with small steps and build big websites!
+      </p>
+      <a href="pages/learn.html" class="btn btn-lg" style="background: white; color: #2563EB; font-weight: 800;">
+        START YOUR JOURNEY NOW
+      </a>
+    </div>
+  </section>
+
+  <!-- Universal Footer Container -->
+  <div id="webcraft-footer"></div>
+
+  <!-- Scripts -->
+  <script src="js/icons.js"></script>
+  <script src="js/audio.js"></script>
+  <script src="js/storage.js"></script>
+  <script src="js/data.js"></script>
+  <script src="js/playground.js"></script>
+  <script src="js/app.js"></script>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      WebCraftApp.init('home');
+
+      // Update welcome banner with user name
+      const user = WebCraftStorage.getUser();
+      const welcomeEl = document.getElementById('welcomeLearnerName');
+      if (welcomeEl && user && user.name) {
+        welcomeEl.innerText = `Welcome back, ${user.name}!`;
+      }
+
+      // Initialize Home Interactive Playground
+      WebCraftPlayground.create('homePlayground', {
+        multiTab: true,
+        html: `<!-- Try editing this HTML -->
+<div class="welcome-card">
+  <h1>Hello, WebCrafter!</h1>
+  <p>You are typing inside a real browser code editor.</p>
+  <button id="sparkleBtn">Click for Interaction</button>
+  <p id="magicMsg"></p>
+</div>`,
+        css: `/* Try editing this CSS */
+body {
+  font-family: 'Poppins', sans-serif;
+  background: #F8FBFF;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 240px;
+  margin: 0;
+}
+.welcome-card {
+  background: white;
+  padding: 24px;
+  border-radius: 16px;
+  box-shadow: 0 4px 20px rgba(37, 99, 235, 0.08);
+  text-align: center;
+  border-top: 4px solid #2563EB;
+}
+h1 {
+  color: #2563EB;
+  font-size: 22px;
+}
+button {
+  background: #2563EB;
+  color: white;
+  border: none;
+  padding: 10px 18px;
+  border-radius: 8px;
+  font-weight: bold;
+  cursor: pointer;
+  margin-top: 10px;
+}`,
+        js: `// Try editing this JavaScript
+document.getElementById('sparkleBtn').addEventListener('click', () => {
+  const msg = document.getElementById('magicMsg');
+  msg.innerText = 'Interactive code executed successfully!';
+  msg.style.color = '#16A34A';
+  msg.style.fontWeight = 'bold';
+  msg.style.marginTop = '10px';
+});`
+      });
+    });
+  </script>
+</body>
+</html>

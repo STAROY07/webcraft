@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Knowledge Quiz — WebCraft Trivia Challenge</title>
+  <link rel="icon" type="image/svg+xml" href="../assets/favicon.svg">
+  <link rel="stylesheet" href="../css/style.css">
+  <link rel="stylesheet" href="../css/responsive.css">
+</head>
+<body>
+
+  <!-- Universal Header -->
+  <div id="webcraft-header"></div>
+
+  <main class="container">
+    <div class="quiz-wrapper">
+      <!-- Section Tag & Title -->
+      <div class="section-header" style="margin-bottom: 20px;">
+        <span class="section-tag">Knowledge Arena</span>
+        <h1 class="section-title">WebCraft Knowledge Quiz</h1>
+        <p class="section-desc">Test what you have learned and earn bonus XP towards your next level!</p>
+      </div>
+
+      <!-- Category Tabs -->
+      <div class="track-selector" style="margin-bottom: 20px; padding: 4px;">
+        <button class="track-tab-btn category-tab-btn active" data-category="html">HTML Quiz</button>
+        <button class="track-tab-btn category-tab-btn" data-category="css">CSS Quiz</button>
+        <button class="track-tab-btn category-tab-btn" data-category="js">JS Quiz</button>
+        <button class="track-tab-btn category-tab-btn" data-category="mixed">Mixed Quiz</button>
+      </div>
+
+      <!-- Quiz Progress Bar -->
+      <div class="quiz-progress-bar">
+        <div class="quiz-progress-fill" id="quizProgressFill"></div>
+      </div>
+
+      <!-- Question Card Panel -->
+      <div class="card" id="quizCard" style="padding: 32px 26px;">
+        <div style="font-size: 12px; font-weight: 800; color: var(--primary-blue); text-transform: uppercase; margin-bottom: 6px;" id="questionCount">
+          Question 1 of 10
+        </div>
+        <h2 style="font-size: 19px; margin-bottom: 20px; line-height: 1.4;" id="questionText">
+          Question text loading...
+        </h2>
+
+        <!-- Options Container -->
+        <div id="optionsContainer">
+          <!-- Populated by quiz.js -->
+        </div>
+
+        <!-- Explanation Reveal Box -->
+        <div id="explanationBox" style="display: none; padding: 14px 18px; border-radius: var(--radius-md); border: 1.5px solid #E2E8F0; margin-top: 18px; font-size: 13.5px;"></div>
+
+        <!-- Next Question Action -->
+        <div style="text-align: right; margin-top: 20px;">
+          <button class="btn btn-primary btn-lg" id="nextQuestionBtn" style="display: none;">
+            Next Question ➔
+          </button>
+        </div>
+      </div>
+
+      <!-- Final Quiz Summary (Hidden initially) -->
+      <div class="card" id="quizSummary" style="display: none; text-align: center; padding: 40px 24px;">
+        <h2 style="font-size: 26px; margin-bottom: 6px;">Quiz Completed!</h2>
+        <div style="font-size: 38px; font-weight: 900; color: var(--primary-blue); margin: 12px 0;" id="summaryScore">
+          10 / 10
+        </div>
+        <div class="stat-pill xp-pill" id="summaryXp" style="display: inline-flex; font-size: 15px; padding: 8px 20px; margin-bottom: 16px;">
+          +100 XP
+        </div>
+        <p id="summaryFeedback" style="font-size: 15px; color: var(--text-muted); margin-bottom: 24px;"></p>
+
+        <div style="display: flex; gap: 10px; justify-content: center; flex-wrap: wrap;">
+          <button class="btn btn-secondary btn-lg" id="retryQuizBtn">Retake Quiz</button>
+          <a href="achievements.html" class="btn btn-primary btn-lg">View Badges</a>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- Universal Footer -->
+  <div id="webcraft-footer"></div>
+
+  <!-- Scripts -->
+  <script src="../js/icons.js"></script>
+  <script src="../js/audio.js"></script>
+  <script src="../js/storage.js"></script>
+  <script src="../js/data.js"></script>
+  <script src="../js/app.js"></script>
+  <script src="../js/quiz.js"></script>
+</body>
+</html>

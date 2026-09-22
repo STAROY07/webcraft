@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Build Your First Website — WebCraft Final Project</title>
+  <link rel="icon" type="image/svg+xml" href="../assets/favicon.svg">
+  <link rel="stylesheet" href="../css/style.css">
+  <link rel="stylesheet" href="../css/responsive.css">
+</head>
+<body>
+
+  <!-- Universal Header -->
+  <div id="webcraft-header"></div>
+
+  <main class="container" style="padding-top: 20px; margin-bottom: 50px;">
+    <!-- Section Title Banner -->
+    <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 14px; margin-bottom: 20px;">
+      <div>
+        <span class="section-tag" style="background: #EFF6FF; color: var(--primary-blue);">The Final Project</span>
+        <h1 style="font-size: 28px; margin-top: 4px;">BUILD YOUR FIRST WEBSITE</h1>
+        <p style="color: var(--text-muted); font-size: 14px;">
+          Bring together everything you learned in HTML, CSS & JavaScript to construct your very own responsive website!
+        </p>
+      </div>
+
+      <div style="display: flex; gap: 8px; align-items: center;">
+        <button class="btn btn-secondary" id="exportWebsiteBtn">
+          Download .HTML
+        </button>
+        <button class="btn btn-primary btn-lg" id="checkWebsiteBtn">
+          SUBMIT FINAL PROJECT
+        </button>
+      </div>
+    </div>
+
+    <!-- 2-Column Workspace: Checklist on Left, Multi-tab Playground on Right -->
+    <div style="display: grid; grid-template-columns: 300px 1fr; gap: 20px; align-items: start;">
+      <!-- Left: Requirements Checklist -->
+      <div class="card" style="padding: 20px 18px;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px;">
+          <h3 style="font-size: 15px;">Requirements Checklist</h3>
+          <span class="stat-pill xp-pill" style="padding: 3px 8px; font-size: 11.5px;">+1000 XP</span>
+        </div>
+
+        <div id="buildChecklist">
+          <!-- Populated live by build.js -->
+        </div>
+
+        <div style="margin-top: 14px; font-size: 11.5px; color: var(--text-muted); line-height: 1.4;">
+          Edit your code in the tabs on the right, click <strong>RUN CODE</strong>, and watch your checklist items turn green!
+        </div>
+      </div>
+
+      <!-- Right: Playground Sandbox -->
+      <div>
+        <div id="buildPlayground"></div>
+      </div>
+    </div>
+  </main>
+
+  <!-- Victory Modal -->
+  <div class="modal-backdrop" id="buildVictoryModal">
+    <div class="modal-card">
+      <h2 style="font-size: 26px; margin-bottom: 6px;">CONGRATULATIONS!</h2>
+      <p style="color: var(--text-muted); font-size: 14px; margin-bottom: 18px;">
+        You built your very first responsive website from scratch! You have officially conquered WebCraft!
+      </p>
+
+      <div style="background: #EFF6FF; border: 1.5px solid #BFDBFE; border-radius: var(--radius-lg); padding: 18px; margin-bottom: 20px;">
+        <div style="font-size: 16px; font-weight: 800; color: var(--primary-blue);">WEB CREATOR BADGE UNLOCKED</div>
+        <div style="font-size: 22px; font-weight: 900; color: var(--primary-blue); margin-top: 4px;">+1000 XP</div>
+      </div>
+
+      <div style="display: flex; gap: 8px; justify-content: center;">
+        <button class="btn btn-primary btn-lg" id="claimRewardBtn" style="width: 100%;">
+          CLAIM REWARDS & VIEW PROFILE ➔
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Universal Footer -->
+  <div id="webcraft-footer"></div>
+
+  <!-- Scripts -->
+  <script src="../js/icons.js"></script>
+  <script src="../js/audio.js"></script>
+  <script src="../js/storage.js"></script>
+  <script src="../js/data.js"></script>
+  <script src="../js/playground.js"></script>
+  <script src="../js/app.js"></script>
+  <script src="../js/build.js"></script>
+</body>
+</html>

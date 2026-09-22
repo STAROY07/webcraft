@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Coding Missions & Challenges — WebCraft</title>
+  <link rel="icon" type="image/svg+xml" href="../assets/favicon.svg">
+  <link rel="stylesheet" href="../css/style.css">
+  <link rel="stylesheet" href="../css/responsive.css">
+</head>
+<body>
+
+  <!-- Universal Header -->
+  <div id="webcraft-header"></div>
+
+  <main class="container" style="padding-top: 24px; margin-bottom: 50px;">
+    <!-- Page Header -->
+    <div class="section-header">
+      <span class="section-tag">Hands-on Quests</span>
+      <h1 class="section-title">WebCraft Coding Missions</h1>
+      <p class="section-desc">Test your real-world development skills by building complete UI components from scratch!</p>
+    </div>
+
+    <!-- Mission Selector Grid -->
+    <div class="journey-steps" id="missionSelector" style="margin-bottom: 24px;">
+      <!-- Populated by challenges.js -->
+    </div>
+
+    <!-- Mission Workspace -->
+    <div class="lesson-content-card">
+      <div class="lesson-header">
+        <div>
+          <span class="section-tag">Current Mission</span>
+          <h2 style="font-size: 24px; margin-top: 4px;" id="missionTitle">Mission Loading...</h2>
+        </div>
+        <div class="stat-pill xp-pill" id="missionXp" style="font-size: 13.5px; padding: 6px 14px;">
+          +150 XP
+        </div>
+      </div>
+
+      <!-- Mission Briefing & Requirements -->
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 20px;">
+        <div class="explain-box">
+          <h3 style="font-size: 15px; margin-bottom: 6px; color: var(--primary-blue);">Mission Objective</h3>
+          <p id="missionObjective" style="font-size: 13.5px; color: var(--text-main); margin: 0;"></p>
+        </div>
+        <div class="explain-box dev-box">
+          <h3 style="font-size: 15px; margin-bottom: 6px; color: var(--purple);">Requirements Checklist</h3>
+          <ul id="missionRequirements" style="list-style: none; padding: 0; margin: 0;"></ul>
+        </div>
+      </div>
+
+      <!-- Playground -->
+      <div id="challengePlayground" style="margin-bottom: 20px;"></div>
+
+      <!-- Action Button -->
+      <div style="text-align: right; border-top: 1px solid #F1F5F9; padding-top: 16px;">
+        <button class="btn btn-primary btn-lg" id="checkMissionBtn">
+          Submit & Complete Mission
+        </button>
+      </div>
+    </div>
+  </main>
+
+  <!-- Universal Footer -->
+  <div id="webcraft-footer"></div>
+
+  <!-- Scripts -->
+  <script src="../js/icons.js"></script>
+  <script src="../js/audio.js"></script>
+  <script src="../js/storage.js"></script>
+  <script src="../js/data.js"></script>
+  <script src="../js/playground.js"></script>
+  <script src="../js/app.js"></script>
+  <script src="../js/challenges.js"></script>
+</body>
+</html>
